@@ -8,32 +8,23 @@ describe('./utils/autoprefixer', () => {
   const MSIE10_USER_AGENT = 'Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.1; Trident/6.0)';
 
   describe('server side', () => {
-    let savedWindow;
-    let skip = false;
+    // skip tests on PhantomJS because __defineGetter__ method doesn't work
+    if (/PhantomJS/.test(window.navigator.userAgent)) {
+      return;
+    }
+
+    let savedNavigator;
 
     beforeEach(() => {
-      savedWindow = global.window;
-
-      try {
-        // We can reasign window when the test is runned in a real browser.
-        global.window = undefined;
-        skip = false;
-      } catch (err) {
-        skip = true;
-      }
+      savedNavigator = global.navigator;
+      global.navigator = undefined;
     });
 
     afterEach(() => {
-      if (!skip) {
-        global.window = savedWindow;
-      }
+      global.navigator = savedNavigator;
     });
 
     it('should spread properties for display:flex when userAgent is all', () => {
-      if (skip) {
-        return;
-      }
-
       const autoprefix = autoprefixer({
         userAgent: 'all',
       });
@@ -43,7 +34,7 @@ describe('./utils/autoprefixer', () => {
       });
 
       assert.deepEqual(stylePrepared, {
-        display: '-webkit-box; display: -moz-box; display: -ms-inline-flexbox; display: -webkit-inline-flex; display: inline-flex', // eslint-disable-line max-len
+        display: '-webkit-inline-box; display: -moz-inline-box; display: -ms-inline-flexbox; display: -webkit-inline-flex; display: inline-flex', // eslint-disable-line max-len
       });
     });
   });
@@ -55,9 +46,11 @@ describe('./utils/autoprefixer', () => {
 
     const stylePrepared = autoprefix({
       transform: 'rotate(90)',
+      display: 'flex',
     });
 
     assert.deepEqual(stylePrepared, {
+      display: 'flex',
       transform: 'rotate(90)',
       WebkitTransform: 'rotate(90)',
       msTransform: 'rotate(90)',

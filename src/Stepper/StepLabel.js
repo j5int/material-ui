@@ -1,4 +1,5 @@
-import React, {PropTypes} from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 import CheckCircle from '../svg-icons/action/check-circle';
 import SvgIcon from '../SvgIcon';
 
@@ -9,6 +10,7 @@ const getStyles = ({active, completed, disabled}, {muiTheme, stepper}) => {
     iconColor,
     inactiveIconColor,
   } = muiTheme.stepper;
+  const {baseTheme} = muiTheme;
   const {orientation} = stepper;
 
   const styles = {
@@ -17,6 +19,7 @@ const getStyles = ({active, completed, disabled}, {muiTheme, stepper}) => {
       color: textColor,
       display: 'flex',
       alignItems: 'center',
+      fontFamily: baseTheme.fontFamily,
       fontSize: 14,
       paddingLeft: 14,
       paddingRight: 14,
@@ -44,7 +47,7 @@ const getStyles = ({active, completed, disabled}, {muiTheme, stepper}) => {
   if (disabled) {
     styles.icon.color = inactiveIconColor;
     styles.root.color = disabledTextColor;
-    styles.root.cursor = 'not-allowed';
+    styles.root.cursor = 'default';
   }
 
   return styles;

@@ -1,10 +1,5 @@
-import React, {Component,
-  createElement,
-  cloneElement,
-  Children,
-  isValidElement,
-  PropTypes,
-} from 'react';
+import React, {Component, createElement, cloneElement, Children, isValidElement} from 'react';
+import PropTypes from 'prop-types';
 import warning from 'warning';
 import TabTemplate from './TabTemplate';
 import InkBar from './InkBar';
@@ -44,7 +39,7 @@ class Tabs extends Component {
      * Specify initial visible tab index.
      * If `initialSelectedIndex` is set but larger than the total amount of specified tabs,
      * `initialSelectedIndex` will revert back to default.
-     * If `initialSlectedIndex` is set to any negative value, no tab will be selected intially.
+     * If `initialSelectedIndex` is set to any negative value, no tab will be selected intially.
      */
     initialSelectedIndex: PropTypes.number,
     /**
@@ -151,7 +146,7 @@ class Tabs extends Component {
     return selectedIndex;
   }
 
-  handleTabTouchTap = (value, event, tab) => {
+  handleTabClick = (value, event, tab) => {
     const valueLink = this.getValueLink(this.props);
     const index = tab.props.index;
 
@@ -216,13 +211,15 @@ class Tabs extends Component {
         index: index,
         selected: this.getSelected(tab, index),
         width: `${width}%`,
-        onTouchTap: this.handleTabTouchTap,
+        onClick: this.handleTabClick,
       });
     });
 
-    const inkBar = this.state.selectedIndex !== -1 ? (
+    const realSelectedIndex = valueLink.value ? this.getSelectedIndex(this.props) : this.state.selectedIndex;
+
+    const inkBar = realSelectedIndex !== -1 ? (
       <InkBar
-        left={`${width * this.state.selectedIndex}%`}
+        left={`${width * realSelectedIndex}%`}
         width={`${width}%`}
         style={inkBarStyle}
       />
@@ -232,10 +229,7 @@ class Tabs extends Component {
       tabItemContainerStyle.width : '100%';
 
     return (
-      <div
-        style={prepareStyles(Object.assign({}, style))}
-        {...other}
-      >
+      <div style={prepareStyles(Object.assign({}, style))} {...other}>
         <div style={prepareStyles(Object.assign(styles.tabItemContainer, tabItemContainerStyle))}>
           {tabs}
         </div>

@@ -1,4 +1,5 @@
-import React, {Component, Children, PropTypes} from 'react';
+import React, {Component, Children} from 'react';
+import PropTypes from 'prop-types';
 import StepConnector from './StepConnector';
 
 const getStyles = (props) => {
@@ -22,9 +23,13 @@ class Stepper extends Component {
      */
     activeStep: PropTypes.number,
     /**
-     * Should be two or more `<Step />` components
+     * Should be two or more `<Step />` components.
      */
-    children: PropTypes.arrayOf(PropTypes.node),
+    children: PropTypes.node,
+    /**
+     * A component to be placed between each step.
+     */
+    connector: PropTypes.node,
     /**
      * If set to `true`, the `Stepper` will assist in controlling steps for linear flow
      */
@@ -40,6 +45,7 @@ class Stepper extends Component {
   };
 
   static defaultProps = {
+    connector: <StepConnector />,
     orientation: 'horizontal',
     linear: true,
   };
@@ -57,6 +63,7 @@ class Stepper extends Component {
     const {
       activeStep,
       children,
+      connector,
       linear,
       style,
     } = this.props;
@@ -72,6 +79,9 @@ class Stepper extends Component {
      */
     const numChildren = Children.count(children);
     const steps = Children.map(children, (step, index) => {
+      if (!React.isValidElement(step)) {
+        return null;
+      }
       const controlProps = {index};
 
       if (activeStep === index) {
@@ -87,7 +97,7 @@ class Stepper extends Component {
       }
 
       return [
-        index > 0 && <StepConnector />,
+        index > 0 && connector,
         React.cloneElement(step, Object.assign(controlProps, step.props)),
       ];
     });

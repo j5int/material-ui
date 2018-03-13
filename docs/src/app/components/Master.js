@@ -1,4 +1,5 @@
-import React, {Component, PropTypes} from 'react';
+import React, {Component} from 'react';
+import PropTypes from 'prop-types';
 import Title from 'react-title-component';
 import AppBar from 'material-ui/AppBar';
 import IconButton from 'material-ui/IconButton';
@@ -7,6 +8,7 @@ import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import {darkWhite, lightWhite, grey900} from 'material-ui/styles/colors';
 import AppNavDrawer from './AppNavDrawer';
 import FullWidthSection from './FullWidthSection';
+import Carbon from './Carbon';
 import withWidth, {MEDIUM, LARGE} from 'material-ui/utils/withWidth';
 
 class Master extends Component {
@@ -40,20 +42,47 @@ class Master extends Component {
     });
   }
 
+  componentDidMount() {
+    window.gtag('config', 'UA-106598593-1', {
+      page_path: location.hash.slice(1),
+    });
+  }
+
   componentWillReceiveProps(nextProps, nextContext) {
     const newMuiTheme = nextContext.muiTheme ? nextContext.muiTheme : this.state.muiTheme;
     this.setState({
       muiTheme: newMuiTheme,
     });
+
+    if (this.props.location.pathname !== nextProps.location.pathname) {
+      window.gtag('config', 'UA-106598593-1', {
+        page_path: location.hash.slice(1),
+      });
+    }
   }
 
   getStyles() {
     const styles = {
+      v1: {
+        height: 40,
+        backgroundColor: '#2196f3',
+        display: 'flex',
+        color: '#fff',
+        alignItems: 'center',
+        justifyContent: 'center',
+        position: 'fixed',
+        top: 0,
+        width: '100%',
+        zIndex: this.state.muiTheme.zIndex.appBar + 1,
+      },
+      v1Spacer: {
+        height: 40,
+      },
       appBar: {
         position: 'fixed',
         // Needed to overlap the examples
         zIndex: this.state.muiTheme.zIndex.appBar + 1,
-        top: 0,
+        top: 40,
       },
       root: {
         paddingTop: spacing.desktopKeylineIncrement,
@@ -103,7 +132,7 @@ class Master extends Component {
     return styles;
   }
 
-  handleTouchTapLeftIconButton = () => {
+  handleClickLeftIconButton = () => {
     this.setState({
       navDrawerOpen: !this.state.navDrawerOpen,
     });
@@ -116,10 +145,12 @@ class Master extends Component {
   };
 
   handleChangeList = (event, value) => {
-    this.context.router.push(value);
-    this.setState({
-      navDrawerOpen: false,
-    });
+    if (value) {
+      this.context.router.push(value);
+      this.setState({
+        navDrawerOpen: false,
+      });
+    }
   };
 
   handleChangeMuiTheme = (muiTheme) => {
@@ -168,8 +199,15 @@ class Master extends Component {
     return (
       <div>
         <Title render="Material-UI" />
+        <div style={prepareStyles(styles.v1Spacer)}>
+          <a style={prepareStyles(styles.v1)} href="https://material-ui-next.com/">
+            <span>
+              Aww yeah, Material-UI v1 is coming!
+            </span>
+          </a>
+        </div>
         <AppBar
-          onLeftIconButtonTouchTap={this.handleTouchTapLeftIconButton}
+          onLeftIconButtonClick={this.handleClickLeftIconButton}
           title={title}
           zDepth={0}
           iconElementRight={
@@ -184,6 +222,7 @@ class Master extends Component {
         {title !== '' ?
           <div style={prepareStyles(styles.root)}>
             <div style={prepareStyles(styles.content)}>
+              <Carbon key={location.pathname} />
               {React.cloneElement(children, {
                 onChangeMuiTheme: this.handleChangeMuiTheme,
               })}

@@ -3,7 +3,10 @@
 import React from 'react';
 import {shallow} from 'enzyme';
 import {assert} from 'chai';
+import Step from './Step';
+import StepConnector from './StepConnector';
 import Stepper from './Stepper';
+import FontIcon from '../FontIcon';
 import getMuiTheme from '../styles/getMuiTheme';
 
 describe('<Stepper />', () => {
@@ -44,7 +47,15 @@ describe('<Stepper />', () => {
       assert.ok(wrapper.childAt(3).is('pure(StepConnector)'));
     });
 
-    assert.ok(true);
+    it('should accept invalid child', () => {
+      shallowWithContext(
+        <Stepper>
+          {null}
+          <div />
+        </Stepper>,
+      );
+      assert.strictEqual(true, true);
+    });
   });
 
   describe('controlling child props', () => {
@@ -105,6 +116,41 @@ describe('<Stepper />', () => {
       assert.strictEqual(steps.at(0).props().last, undefined);
       assert.strictEqual(steps.at(1).props().last, undefined);
       assert.strictEqual(steps.at(2).props().last, true);
+    });
+  });
+
+  describe('step connector', () => {
+    it('should have a default step connector', () => {
+      const wrapper = shallowWithContext(
+        <Stepper>
+          <Step /><Step />
+        </Stepper>
+      );
+
+      assert.strictEqual(wrapper.find(StepConnector).length, 1, 'should contain a <StepConnector /> child');
+    });
+
+    it('should allow the developer to specify a custom step connector', () => {
+      const wrapper = shallowWithContext(
+        <Stepper
+          connector={<FontIcon className="material-icons">arrow-forward</FontIcon>}
+        >
+          <Step /><Step />
+        </Stepper>
+      );
+
+      assert.strictEqual(wrapper.find(FontIcon).length, 1, 'should contain a <FontIcon /> child');
+      assert.strictEqual(wrapper.find(StepConnector).length, 0, 'should not contain a <StepConnector /> child');
+    });
+
+    it('should allow the step connector to be removed', () => {
+      const wrapper = shallowWithContext(
+        <Stepper connector={null}>
+          <Step /><Step />
+        </Stepper>
+      );
+
+      assert.strictEqual(wrapper.find(StepConnector).length, 0, 'should not contain a <StepConnector /> child');
     });
   });
 });
