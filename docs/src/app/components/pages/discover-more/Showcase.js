@@ -156,12 +156,6 @@ const appList = [
     link: 'https://devsketch.io/',
   },
   {
-    title: 'BrainBOK - PMP / CAPM Exam Prep Simplified',
-    author: 'BrainBOK',
-    img: 'images/showcase/brainbok-for-pmp-capm-certification.png',
-    link: 'https://www.brainbok.com',
-  },
-  {
     title: 'HoopHubs篮圈 - 查CBA/NBA比赛数据，就上HoopHubs篮圈',
     author: 'HoopHubs',
     img: 'images/showcase/hoophubs-basketball-stats-tool.png',
@@ -178,6 +172,12 @@ const appList = [
     author: 'FlyWeekend',
     img: 'images/showcase/flyweekend.png',
     link: 'https://flyweekend.co',
+  },
+  {
+    title: 'smpl - Coworking Space Management',
+    author: 'smpl',
+    img: 'images/showcase/smpl.png',
+    link: 'https://smpl.io/features/your-experience/',
   },
 ];
 
