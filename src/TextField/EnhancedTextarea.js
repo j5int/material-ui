@@ -4,6 +4,13 @@ import EventListener from 'react-event-listener';
 
 const rowsHeight = 24;
 
+let isWKWebView = false ;
+if( navigator.platform.substr(0,2) === 'iP' ) {    // iOS detected
+    if( window.webkit && window.webkit.messageHandlers ) {
+        isWKWebView = true ;
+    }
+}
+
 function getStyles(props, context, state) {
   return {
     root: {
@@ -116,11 +123,13 @@ class EnhancedTextarea extends Component {
 
     if (this.state.height !== newHeight) {
       const input = this.refs.input;
-      const cursorPosition = input.selectionStart;
+      const cursorPosition = input.selectionEnd;
       this.setState({
         height: newHeight,
       }, () => {
-        input.setSelectionRange(cursorPosition, cursorPosition);
+        if (!isWKWebView) {
+          input.setSelectionRange(cursorPosition, cursorPosition);
+        }
       });
 
       if (props.onHeightChange) {
